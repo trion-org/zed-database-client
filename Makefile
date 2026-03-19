@@ -26,29 +26,31 @@ help:
 
 init:
 	@set -e; \
-	ensure_checkout() { \
+	ensure_branch() { \
 		repo_path="$$1"; \
 		branch_name="$$2"; \
-		if [ -d "$$repo_path/.git" ]; then \
-			echo "Checking out $$branch_name in $$repo_path"; \
-			git -C "$$repo_path" fetch "$(REMOTE)" >/dev/null 2>&1 || git -C "$$repo_path" fetch "$(REMOTE)"; \
-			if git -C "$$repo_path" ls-remote --exit-code --heads "$(REMOTE)" "$$branch_name" >/dev/null 2>&1; then \
-				git -C "$$repo_path" checkout -B "$$branch_name" "$(REMOTE)/$$branch_name"; \
+		echo "Checking out $$branch_name in $$repo_path"; \
+		git -C "." fetch "$(REMOTE)" >/dev/null 2>&1 || git -C "." fetch "$(REMOTE)"; \
+		if [ "$$repo_path" = "." ]; then \
+			if git -C "." branch --list "$$branch_name" >/dev/null 2>&1; then \
+				git -C "." checkout "$$branch_name"; \
 			else \
-				git -C "$$repo_path" checkout "$$branch_name"; \
+				git -C "." checkout -B "$$branch_name" "$(REMOTE)/$$branch_name"; \
 			fi; \
-		elif [ -z "$$(ls -A "$$repo_path" 2>/dev/null)" ]; then \
-			echo "Cloning $$branch_name into $$repo_path"; \
-			git clone --branch "$$branch_name" --single-branch "$$(git remote get-url "$(REMOTE)")" "$$repo_path"; \
-		else \
-			echo "Skipping $$repo_path: exists and is not empty, but not a git repository."; \
+		elif [ -d "$$repo_path/.git" ] || [ -f "$$repo_path/.git" ]; then \
+			echo "Skipping $$repo_path: already has its own git checkout. Remove it before re-running init."; \
 			exit 1; \
+		elif [ -e "$$repo_path" ] && [ -n "$$(ls -A "$$repo_path" 2>/dev/null)" ]; then \
+			echo "Skipping $$repo_path: exists and is not empty. Remove it before re-running init."; \
+			exit 1; \
+		else \
+			git -C "." worktree add -B "$$branch_name" "$$repo_path" "$(REMOTE)/$$branch_name"; \
 		fi; \
 	}; \
-	ensure_checkout "." "develop"; \
-	ensure_checkout "vscode-database-client" "explore/vscode-database-client"; \
-	ensure_checkout "zandbox" "chore/zandbox"; \
-	ensure_checkout "zed-editor" "explore/zed-editor"
+	ensure_branch "." "develop"; \
+	ensure_branch "vscode-database-client" "explore/vscode-database-client"; \
+	ensure_branch "zandbox" "chore/zandbox"; \
+	ensure_branch "zed-editor" "explore/zed-editor"
 
 preview:
 	@current_branch="$$(git branch --show-current 2>/dev/null)"; \
@@ -75,23 +77,27 @@ git-sync:
 	sync_repo() { \
 		repo_path="$$1"; \
 		branch_name="$$2"; \
-		if [ ! -d "$$repo_path/.git" ]; then \
+		if [ "$$repo_path" = "." ]; then \
+			repo_git="."; \
+		elif [ -d "$$repo_path/.git" ] || [ -f "$$repo_path/.git" ]; then \
+			repo_git="$$repo_path"; \
+		else \
 			echo "Skipping $$repo_path: not a git repository."; \
 			return 0; \
 		fi; \
 		echo "Syncing $$repo_path on branch $$branch_name"; \
-		git -C "$$repo_path" add -A; \
-		if ! git -C "$$repo_path" diff --cached --quiet; then \
-			git -C "$$repo_path" commit -m "$$(date '+%Y-%m-%d %H:%M:%S %z')"; \
+		git -C "$$repo_git" add -A; \
+		if ! git -C "$$repo_git" diff --cached --quiet; then \
+			git -C "$$repo_git" commit -m "$$(date '+%Y-%m-%d %H:%M:%S %z')"; \
 		else \
 			echo "No staged changes to commit in $$repo_path."; \
 		fi; \
-		if git -C "$$repo_path" ls-remote --exit-code --heads "$(REMOTE)" "$$branch_name" >/dev/null 2>&1; then \
-			git -C "$$repo_path" pull --rebase "$(REMOTE)" "$$branch_name"; \
+		if git -C "$$repo_git" ls-remote --exit-code --heads "$(REMOTE)" "$$branch_name" >/dev/null 2>&1; then \
+			git -C "$$repo_git" pull --rebase "$(REMOTE)" "$$branch_name"; \
 		else \
 			echo "Remote branch $(REMOTE)/$$branch_name does not exist yet. Skipping pull --rebase for $$repo_path."; \
 		fi; \
-		git -C "$$repo_path" push -u "$(REMOTE)" "$$branch_name"; \
+		git -C "$$repo_git" push -u "$(REMOTE)" "$$branch_name"; \
 	}; \
 	sync_repo "." "develop"; \
 	sync_repo "vscode-database-client" "explore/vscode-database-client"; \
