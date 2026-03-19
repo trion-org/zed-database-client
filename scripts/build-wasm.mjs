@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const cargoHomeBin = path.join(os.homedir(), '.cargo', 'bin');
+const pathDelimiter = path.delimiter;
 const cargoExecutable = fs.existsSync(path.join(cargoHomeBin, 'cargo'))
   ? path.join(cargoHomeBin, 'cargo')
   : 'cargo';
@@ -20,7 +21,7 @@ const result = spawnSync(
     stdio: 'inherit',
     env: {
       ...process.env,
-      PATH: `${cargoHomeBin}:${process.env.PATH ?? ''}`,
+      PATH: `${cargoHomeBin}${pathDelimiter}${process.env.PATH ?? ''}`,
       RUSTUP_NO_UPDATE_CHECK: '1'
     }
   }

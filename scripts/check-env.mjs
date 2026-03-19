@@ -8,12 +8,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const cargoHomeBin = path.join(os.homedir(), '.cargo', 'bin');
+const pathDelimiter = path.delimiter;
 const cargoExecutable = fs.existsSync(path.join(cargoHomeBin, 'cargo'))
   ? path.join(cargoHomeBin, 'cargo')
   : 'cargo';
 const rustupExecutable = fs.existsSync(path.join(cargoHomeBin, 'rustup'))
   ? path.join(cargoHomeBin, 'rustup')
   : 'rustup';
+const isWindows = process.platform === 'win32';
 
 const checks = [];
 
@@ -23,7 +25,7 @@ function run(command, args) {
     encoding: 'utf8',
     env: {
       ...process.env,
-      PATH: `${cargoHomeBin}:${process.env.PATH ?? ''}`,
+      PATH: `${cargoHomeBin}${pathDelimiter}${process.env.PATH ?? ''}`,
       RUSTUP_NO_UPDATE_CHECK: '1'
     }
   });
@@ -38,8 +40,38 @@ function run(command, args) {
   };
 }
 
+function shell(commandLine) {
+  const result = spawnSync('sh', ['-lc', commandLine], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      PATH: `${cargoHomeBin}${pathDelimiter}${process.env.PATH ?? ''}`,
+      RUSTUP_NO_UPDATE_CHECK: '1'
+    }
+  });
+
+  return {
+    status: result.status,
+    stdout: (result.stdout || '').trim(),
+    stderr: (result.stderr || '').trim(),
+    error: result.error
+  };
+}
+
 function addCheck(label, passed, detail) {
   checks.push({ label, passed, detail });
+}
+
+function commandExists(command, args) {
+  const result = run(command, args);
+  return {
+    passed: result.status === 0,
+    detail:
+      result.status === 0
+        ? result.stdout
+        : result.error?.message || result.stderr || `${command} not found`
+  };
 }
 
 function checkFile(relativePath) {
@@ -84,6 +116,39 @@ if (rustup.status === 0) {
   );
 }
 
+if (!isWindows) {
+  const zed = shell('command -v zed');
+  addCheck(
+    'zed',
+    zed.status === 0,
+    zed.status === 0
+      ? zed.stdout
+      : zed.error?.message || zed.stderr || 'zed not found'
+  );
+
+  if (
+    zed.status === 0 &&
+    (zed.stdout.startsWith('/mnt/c/') || zed.stdout.endsWith('.exe'))
+  ) {
+    addCheck(
+      'zed-linux-binary',
+      false,
+      `Zed resolves to a Windows install at ${zed.stdout}. Use the Linux Zed binary inside WSL for a no-admin extension build.`
+    );
+  }
+}
+
+if (isWindows) {
+  const link = commandExists('where', ['link.exe']);
+  addCheck(
+    'link.exe',
+    link.passed,
+    link.passed
+      ? link.detail
+      : 'link.exe not found. Windows builds need Visual Studio Build Tools with the C++ workload.'
+  );
+}
+
 [
   'extension.toml',
   'Cargo.toml',
@@ -104,7 +169,9 @@ if (failures.length > 0) {
   console.error('');
   console.error('Environment is not ready for a full Zed extension build.');
   console.error(
-    'Minimum fix path: install rustup, install cargo, add wasm32-wasip2 target.'
+    isWindows
+      ? 'Minimum fix path on Windows: install Rust toolchain, install wasm32-wasip2, and install Visual Studio Build Tools with C++ build tools.'
+      : 'Minimum fix path on Linux/WSL: use the Linux Zed binary, install rustup, add wasm32-wasip2, and keep the repo on the Linux filesystem.'
   );
   process.exitCode = 1;
 } else {

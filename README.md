@@ -63,10 +63,32 @@ Not implemented yet:
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 20+ inside WSL/Linux
 - Rust via `rustup`
 - Rust target `wasm32-wasip2`
+- Linux Zed binary when using the no-admin WSL path
 - Zed installed locally
+
+## No-Admin WSL/Linux Setup
+
+This path avoids Visual Studio Build Tools, but it only works when the toolchain stays Linux-native inside WSL.
+
+- `node` and `npm` must resolve to Linux binaries, not `/mnt/c/...`
+- `cargo` and `rustup` must be the WSL/Linux ones
+- `zed` must be the Linux Zed binary, not the Windows app launcher
+- keep the repo checked out under `/home/...` in WSL, not a Windows UNC path
+
+A user-space Node manager such as `nvm` is the simplest way to install Node 20+ without admin rights.
+
+Example:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+. "$HOME/.nvm/nvm.sh"
+nvm install 20
+nvm use 20
+rustup target add wasm32-wasip2
+```
 
 ## Commands
 
@@ -142,12 +164,14 @@ The config format intentionally prefers environment-variable references for secr
 
 ## Install in Zed
 
-1. Open Zed.
+1. Open the Linux Zed binary inside WSL.
 2. Run `zed: extensions`.
 3. Click `Install Dev Extension`.
-4. Choose this repository root: `/home/erisanh/projects/area/zed-database-client`.
+4. Choose this repository root from the Linux filesystem path, for example `/home/erisanh/projects/area/zed-database-client`.
 
-If Rust is missing, the installation/build will fail until the Rust toolchain is installed.
+If you use the Windows Zed binary, the dev-extension build still runs on Windows and will not be admin-free.
+
+If Rust is missing, the installation/build will fail until the Rust toolchain is installed. On Linux/WSL, no Visual Studio Build Tools are needed.
 
 ## Zed context-server settings example
 
