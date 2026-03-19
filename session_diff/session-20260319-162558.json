@@ -1,0 +1,42 @@
+{
+  "session_time": "2026-03-19 16:25:58 +0700",
+  "summary": "Refined docs/TODO.md into standardized English and made near-parity UI with vscode-database-client an explicit product requirement rather than an optional direction.",
+  "context_loaded": [
+    "/home/erisanh/projects/area/zed-database-client/AGENTS.md",
+    "/home/erisanh/projects/area/zed-database-client/docs/TODO.md",
+    "/home/erisanh/projects/area/zed-database-client/vscode-database-client"
+  ],
+  "timeline": [
+    "Reviewed the current roadmap in docs/TODO.md.",
+    "Confirmed the roadmap was already structured as an English table-based plan.",
+    "Tightened wording so the target is clearly a UI-and-workflow product close to vscode-database-client, not a thin CLI-first extension.",
+    "Recorded the session state for future continuation."
+  ],
+  "commands": [
+    {
+      "command": "sed -n '1,320p' docs/TODO.md",
+      "outcome": "Reviewed the current roadmap content."
+    },
+    {
+      "command": "ls -1 zandbox/session_diff | tail -n 5",
+      "outcome": "Confirmed the latest snapshot files before writing a new one."
+    }
+  ],
+  "decisions": [
+    "Keep the roadmap fully in English.",
+    "State UI similarity to vscode-database-client as a P0 product requirement.",
+    "Preserve the early architecture gate because Zed may not expose enough native UI surface for direct parity."
+  ],
+  "files_changed": [
+    "/home/erisanh/projects/area/zed-database-client/docs/TODO.md",
+    "/home/erisanh/projects/area/zed-database-client/zandbox/session_diff/session-20260319-162558.json"
+  ],
+  "issues": [
+    "Near-parity UI still depends on what can realistically be built with current Zed extension APIs or with a hybrid companion UI."
+  ],
+  "next_steps": [
+    "Use Phase 1 to prove the exact UI architecture path: native, hybrid, or upstream/fork.",
+    "Break Phase 1 into concrete investigation tasks against zed-editor APIs and the vscode-database-client reference UX.",
+    "Start defining the explorer, query tabs, and result-grid interaction model in implementation detail."
+  ]
+}
