@@ -1,0 +1,49 @@
+{
+  "session_time": "2026-03-19 16:44:35 +0700",
+  "summary": "Reviewed the built extension scaffold usage flow after a successful make extension-build run and documented how to install it in Zed, configure connections, and invoke the current slash-command and MCP surfaces.",
+  "context_loaded": [
+    "/home/erisanh/projects/area/zed-database-client/AGENTS.md",
+    "/home/erisanh/projects/area/zed-database-client/README.md",
+    "/home/erisanh/projects/area/zed-database-client/extension.toml",
+    "/home/erisanh/projects/area/zed-database-client/src/lib.rs",
+    "/home/erisanh/projects/area/zed-database-client/scripts/sidecar.mjs",
+    "/home/erisanh/projects/area/zed-database-client/examples/connections.example.json"
+  ],
+  "timeline": [
+    "Confirmed the user's make extension-build output showed a successful doctor run and a successful release WASM build.",
+    "Reviewed extension.toml to confirm the registered slash commands and context server id.",
+    "Reviewed src/lib.rs to confirm how slash commands and the MCP context server invoke the Node sidecar.",
+    "Reviewed scripts/sidecar.mjs to confirm config resolution order, CLI commands, MCP tools, and current limitations.",
+    "Reviewed README.md to confirm the documented dev-extension installation flow inside Zed."
+  ],
+  "commands": [
+    {
+      "command": "sed -n '1,260p' README.md",
+      "outcome": "Succeeded. Confirmed install-in-Zed and context server setup instructions."
+    },
+    {
+      "command": "sed -n '1,260p' src/lib.rs",
+      "outcome": "Succeeded. Confirmed slash commands db-status, db-connections, and db-describe plus MCP launch wiring."
+    },
+    {
+      "command": "sed -n '1,260p' scripts/sidecar.mjs",
+      "outcome": "Succeeded. Confirmed CLI commands, MCP tools, config search order, and scaffold-only query limitation."
+    }
+  ],
+  "decisions": [
+    "Answer the user in Vietnamese because the question was asked in Vietnamese.",
+    "Clarify that make extension-build only builds the extension and does not install or activate it inside Zed.",
+    "Call out that the current scaffold supports connection listing and describing but not real query execution yet."
+  ],
+  "files_changed": [
+    "/home/erisanh/projects/area/zed-database-client/zandbox/session_diff/session-20260319-164419.json"
+  ],
+  "issues": [
+    "The scaffold does not yet include real database drivers or working query execution; db_run_query and run-query are placeholders."
+  ],
+  "next_steps": [
+    "If needed, add a workspace-local .zed/database-client.connections.json file for real project usage.",
+    "Install the repo as a dev extension in Zed and verify slash commands there.",
+    "Implement a real driver adapter before expecting SQL execution."
+  ]
+}

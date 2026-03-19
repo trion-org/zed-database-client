@@ -1,0 +1,50 @@
+{
+  "session_time": "2026-03-19T17:20:46+07:00",
+  "summary": "Switched the repo to a no-admin WSL/Linux setup: fixed PATH handling for Linux shells, documented the Linux Zed requirement, pinned Node 20 with .nvmrc, and verified the wasm build passes in WSL.",
+  "context_loaded": [
+    "AGENTS.md repo instructions",
+    "package.json",
+    "Cargo.toml",
+    "src/lib.rs",
+    "scripts/build-wasm.mjs",
+    "scripts/check-env.mjs",
+    "README.md",
+    "Makefile"
+  ],
+  "timeline": [
+    "Confirmed the Windows host was still using the Windows Zed binary and lacked the linker path.",
+    "Validated that WSL had cargo/rustup but no native Linux Node.",
+    "Installed Node 20 in WSL via nvm without admin rights.",
+    "Updated scripts to use platform-correct PATH separators.",
+    "Rewrote the README to document the WSL/Linux no-admin path and Linux Zed requirement.",
+    "Verified npm run build:wasm succeeds in WSL with the native Linux Node toolchain.",
+    "Verified npm run doctor now fails only because WSL resolves zed to the Windows install path."
+  ],
+  "commands": [
+    "wsl.exe bash -lc 'export NVM_DIR=/home/erisanh/.nvm; . /home/erisanh/.nvm/nvm.sh; nvm install 20; nvm alias default 20; node --version; npm --version'",
+    "wsl.exe bash -lc 'export NVM_DIR=/home/erisanh/.nvm; . /home/erisanh/.nvm/nvm.sh; cd /home/erisanh/projects/area/zed-database-client && npm run doctor'",
+    "wsl.exe bash -lc 'export NVM_DIR=/home/erisanh/.nvm; . /home/erisanh/.nvm/nvm.sh; cd /home/erisanh/projects/area/zed-database-client && npm run build:wasm'"
+  ],
+  "decisions": [
+    "Treat the no-admin path as Linux-native WSL, not Windows Zed plus WSL workspace.",
+    "Keep the repo build scripts usable in WSL by switching to path.delimiter for PATH handling.",
+    "Pin Node 20 in .nvmrc so the WSL setup is reproducible without admin rights."
+  ],
+  "files_changed": [
+    "README.md",
+    "scripts/check-env.mjs",
+    "scripts/build-wasm.mjs",
+    ".nvmrc"
+  ],
+  "issues": [
+    "WSL still resolves zed to the Windows installation at /mnt/c/Users/RkUser/AppData/Local/Programs/Zed/bin/zed.",
+    "The no-admin build path requires a Linux Zed binary inside WSL; the Windows Zed binary will still build on Windows and require MSVC tooling.",
+    "The native Linux Node toolchain now exists in WSL, but Zed itself has not yet been switched to a Linux install."
+  ],
+  "next_steps": [
+    "Install or launch the Linux Zed binary inside WSL, then retry Install Dev Extension.",
+    "If needed, add a tiny helper note in the repo for launching the Linux Zed binary from WSL.",
+    "Re-run npm run doctor after zed resolves to a Linux binary to confirm the full no-admin path.",
+    "Re-run the dev-extension install from the Linux Zed app." 
+  ]
+}
