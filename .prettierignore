@@ -1,7 +1,7 @@
-vscode-database-client/
-zandbox/
-zed-editor/
-target/
 node_modules/
-*.wasm
+target/
+vscode-database-client/
+zed-editor/
+zandbox/
 config/
+*.wasm

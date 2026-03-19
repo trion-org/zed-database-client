@@ -1,0 +1,30 @@
+[
+  {
+    "label": "database-client: doctor",
+    "command": "npm",
+    "args": ["run", "doctor"],
+    "allow_concurrent_runs": true,
+    "use_new_terminal": false
+  },
+  {
+    "label": "database-client: sidecar status",
+    "command": "npm",
+    "args": ["run", "sidecar:status"],
+    "allow_concurrent_runs": true,
+    "use_new_terminal": false
+  },
+  {
+    "label": "database-client: sidecar list",
+    "command": "npm",
+    "args": ["run", "sidecar:list"],
+    "allow_concurrent_runs": true,
+    "use_new_terminal": false
+  },
+  {
+    "label": "database-client: build wasm",
+    "command": "npm",
+    "args": ["run", "build:wasm"],
+    "allow_concurrent_runs": true,
+    "use_new_terminal": false
+  }
+]

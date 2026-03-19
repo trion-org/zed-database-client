@@ -1,0 +1,12 @@
+[package]
+name = "database_client_extension"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+zed_extension_api = { path = "zed-editor/crates/extension_api" }

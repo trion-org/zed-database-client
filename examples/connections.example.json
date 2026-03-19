@@ -1,0 +1,26 @@
+{
+  "connections": [
+    {
+      "id": "local-postgres",
+      "displayName": "Local Postgres",
+      "driver": "postgres",
+      "host": "127.0.0.1",
+      "port": 5432,
+      "database": "app",
+      "username": "app",
+      "passwordEnv": "PGPASSWORD",
+      "tags": ["primary", "local"]
+    },
+    {
+      "id": "local-mysql",
+      "displayName": "Local MySQL",
+      "driver": "mysql",
+      "host": "127.0.0.1",
+      "port": 3306,
+      "database": "app",
+      "username": "root",
+      "passwordEnv": "MYSQL_PWD",
+      "tags": ["reporting"]
+    }
+  ]
+}

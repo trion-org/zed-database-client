@@ -1,0 +1,26 @@
+id = "database-client-dev"
+name = "Database Client"
+description = "Scaffold for a Zed-native database extension backed by a Node sidecar and MCP server."
+version = "0.1.0"
+schema_version = 1
+authors = ["Area Team"]
+repository = "https://github.com/example/database-client"
+
+[slash_commands.db-status]
+description = "Show scaffold status and active config resolution"
+requires_argument = false
+
+[slash_commands.db-connections]
+description = "List configured database connections"
+requires_argument = false
+
+[slash_commands.db-describe]
+description = "Describe one configured database connection"
+requires_argument = true
+
+[context_servers.database-client]
+
+[[capabilities]]
+kind = "process:exec"
+command = "node"
+args = ["**"]

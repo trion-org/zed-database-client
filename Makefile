@@ -8,7 +8,7 @@ BLUE   := \033[0;34m
 YELLOW := \033[0;33m
 NC     := \033[0m
 
-.PHONY: help init preview git-sync
+.PHONY: help init preview git-sync install doctor format format-check gitleaks gitleaks-staged precommit husky-install status list serve build-wasm build extension-build
 
 help:
 	@current_branch="$$(git branch --show-current 2>/dev/null)"; \
@@ -17,12 +17,69 @@ help:
 	printf "%s\n" "Current branch: $${current_branch:-<unknown>}"; \
 	printf "%s\n" "Remote: $(REMOTE)"; \
 	printf "\n"; \
+	printf "$(YELLOW)%s$(NC)\n" "Extension Commands"; \
+	printf "%s\n" "  make install         - Install npm dependencies and prepare Husky hooks"; \
+	printf "%s\n" "  make doctor          - Check local extension prerequisites"; \
+	printf "%s\n" "  make format          - Format supported project files"; \
+	printf "%s\n" "  make format-check    - Check formatting for supported project files"; \
+	printf "%s\n" "  make gitleaks        - Scan the git repository for secrets"; \
+	printf "%s\n" "  make gitleaks-staged - Scan staged changes for secrets"; \
+	printf "%s\n" "  make precommit       - Run staged formatting and gitleaks checks"; \
+	printf "%s\n" "  make husky-install   - Install Git hooks via Husky"; \
+	printf "%s\n" "  make status          - Print scaffold sidecar status"; \
+	printf "%s\n" "  make list            - List example connections"; \
+	printf "%s\n" "  make serve           - Start the MCP sidecar over stdio"; \
+	printf "%s\n" "  make build-wasm      - Build the Rust/WASM extension"; \
+	printf "%s\n" "  make build           - Run doctor + build wasm extension"; \
+	printf "%s\n" "  make extension-build - Alias for make build"; \
+	printf "\n"; \
 	printf "$(YELLOW)%s$(NC)\n" "Available targets:"; \
 	printf "%s\n" "  make          - Show this help message"; \
 	printf "%s\n" "  make init     - Fetch remote and checkout the expected branch in each repo"; \
 	printf "%s\n" "  make preview  - Print the git commands that would run on the current branch"; \
 	printf "%s\n" "  make git-sync - Run add -> commit(timestamp) -> pull --rebase(if remote branch exists) -> push"; \
 	printf "\n"
+
+install:
+	@npm install
+
+doctor:
+	@npm run doctor
+
+format:
+	@npm run format
+
+format-check:
+	@npm run format:check
+
+gitleaks:
+	@npm run gitleaks
+
+gitleaks-staged:
+	@npm run gitleaks:staged
+
+precommit:
+	@npm run precommit
+
+husky-install:
+	@npm run prepare
+
+status:
+	@npm run sidecar:status
+
+list:
+	@npm run sidecar:list
+
+serve:
+	@npm run sidecar:serve
+
+build-wasm:
+	@npm run build:wasm
+
+build:
+	@npm run build
+
+extension-build: build
 
 init:
 	@set -e; \

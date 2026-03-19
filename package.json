@@ -1,0 +1,28 @@
+{
+  "name": "@area/database-client-zed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "prepare": "node ./.husky/install.mjs",
+    "doctor": "node ./scripts/check-env.mjs",
+    "format": "node ./scripts/format-code.mjs write",
+    "format:check": "node ./scripts/format-code.mjs check",
+    "format:staged": "node ./scripts/format-code.mjs write --staged",
+    "gitleaks": "node ./scripts/run-gitleaks.mjs history",
+    "gitleaks:staged": "node ./scripts/run-gitleaks.mjs staged",
+    "precommit": "npm run format:staged && npm run gitleaks:staged",
+    "sidecar:status": "node ./scripts/sidecar.mjs status --config ./examples/connections.example.json",
+    "sidecar:list": "node ./scripts/sidecar.mjs list-connections --config ./examples/connections.example.json",
+    "sidecar:serve": "node ./scripts/sidecar.mjs serve-mcp --config ./examples/connections.example.json",
+    "build:wasm": "node ./scripts/build-wasm.mjs",
+    "build": "npm run doctor && npm run build:wasm"
+  },
+  "devDependencies": {
+    "husky": "^9",
+    "prettier": "^3"
+  }
+}
