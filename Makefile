@@ -31,7 +31,7 @@ preview:
 	fi; \
 	echo "Using branch $$current_branch"; \
 	echo "git add -A"; \
-	if [ -n "$$(git status --porcelain)" ]; then \
+		if [ -n "$$(git status --porcelain)" ]; then \
 		echo "git commit -m \"$$(date '+%Y-%m-%d %H:%M:%S %z')\""; \
 	else \
 		echo "# No changes to commit."; \
