@@ -77,12 +77,17 @@ git-sync:
 	sync_repo() { \
 		repo_path="$$1"; \
 		branch_name="$$2"; \
+		remote_name="$$(git -C "$$repo_path" remote | awk 'NR==1{print; exit}')"; \
 		if [ "$$repo_path" = "." ]; then \
 			repo_git="."; \
 		elif [ -d "$$repo_path/.git" ] || [ -f "$$repo_path/.git" ]; then \
 			repo_git="$$repo_path"; \
 		else \
 			echo "Skipping $$repo_path: not a git repository."; \
+			return 0; \
+		fi; \
+		if [ -z "$$remote_name" ]; then \
+			echo "Skipping $$repo_path: no git remote configured."; \
 			return 0; \
 		fi; \
 		echo "Syncing $$repo_path on branch $$branch_name"; \
@@ -92,12 +97,12 @@ git-sync:
 		else \
 			echo "No staged changes to commit in $$repo_path."; \
 		fi; \
-		if git -C "$$repo_git" ls-remote --exit-code --heads "$(REMOTE)" "$$branch_name" >/dev/null 2>&1; then \
-			git -C "$$repo_git" pull --rebase "$(REMOTE)" "$$branch_name"; \
+		if git -C "$$repo_git" ls-remote --exit-code --heads "$$remote_name" "$$branch_name" >/dev/null 2>&1; then \
+			git -C "$$repo_git" pull --rebase "$$remote_name" "$$branch_name"; \
 		else \
-			echo "Remote branch $(REMOTE)/$$branch_name does not exist yet. Skipping pull --rebase for $$repo_path."; \
+			echo "Remote branch $$remote_name/$$branch_name does not exist yet. Skipping pull --rebase for $$repo_path."; \
 		fi; \
-		git -C "$$repo_git" push -u "$(REMOTE)" "$$branch_name"; \
+		git -C "$$repo_git" push -u "$$remote_name" "$$branch_name"; \
 	}; \
 	sync_repo "." "develop"; \
 	sync_repo "vscode-database-client" "explore/vscode-database-client"; \
