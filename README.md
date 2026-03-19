@@ -1,99 +1,46 @@
+# Zed
 
-# Database Client
+[![Zed](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zed-industries/zed/main/assets/badge/v0.json)](https://zed.dev)
+[![CI](https://github.com/zed-industries/zed/actions/workflows/run_tests.yml/badge.svg)](https://github.com/zed-industries/zed/actions/workflows/run_tests.yml)
 
-#### This repository contains the early source code. The new version is closed source.
+Welcome to Zed, a high-performance, multiplayer code editor from the creators of [Atom](https://github.com/atom/atom) and [Tree-sitter](https://github.com/tree-sitter/tree-sitter).
 
 ---
 
-This project is a database client for Visual Studio Code, supporting the management **MySQL/MariaDB, PostgreSQL, SQLite, Redis, ClickHouse, 达梦**, and **ElasticSearch**, and works as an **SSH** client, boost your maximum productivity!
+### Installation
 
-> Project site: [vscode-database-client](https://github.com/cweijan/vscode-database-client), [中文文档](README_CN.md)
+On macOS, Linux, and Windows you can [download Zed directly](https://zed.dev/download) or install Zed via your local package manager ([macOS](https://zed.dev/docs/installation#macos)/[Linux](https://zed.dev/docs/linux#installing-via-a-package-manager)/[Windows](https://zed.dev/docs/windows#package-managers)).
 
-[![Logo](./public/logo_dark.png)](https://database-client.com)
+Other platforms are not yet available:
 
-## Installation
+- Web ([tracking issue](https://github.com/zed-industries/zed/issues/5396))
 
-Install from the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-mysql-client2) or [Open VSX](https://open-vsx.org/extension/cweijan/vscode-mysql-client2).
+### Developing Zed
 
-## Telemetry Reporting
+- [Building Zed for macOS](./docs/src/development/macos.md)
+- [Building Zed for Linux](./docs/src/development/linux.md)
+- [Building Zed for Windows](./docs/src/development/windows.md)
 
-The Database Client extension will collects and sends anonymous usage data to the Database Client server to help improve our products and services. Read our [Privacy Statement](https://database-client.com/#/privacyPolicy) to learn more.
+### Contributing
 
-Telemetry reporting follows the [telemetry settings](https://code.visualstudio.com/docs/getstarted/telemetry) of VS Code. Additionally, you can independently disable it by setting `"database-client.telemetry.usesOnlineServices": false`.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for ways you can contribute to Zed.
 
-## Connect
+Also... we're hiring! Check out our [jobs](https://zed.dev/jobs) page for open roles.
 
-1. Open Database Explorer panel, then click the `+` button.
-2. Select your database type, input connection config then click the connect button.
+### Licensing
 
-![connection](https://doc.database-client.com/images/connection.jpg)
+License information for third party dependencies must be correctly provided for CI to pass.
 
-## Table
+We use [`cargo-about`](https://github.com/EmbarkStudios/cargo-about) to automatically comply with open source licenses. If CI is failing, check the following:
 
-1. Click table to open table view.
-2. Click button beside table to open new table view.
-3. Then you can do data modification on the table view.
+- Is it showing a `no license specified` error for a crate you've created? If so, add `publish = false` under `[package]` in your crate's Cargo.toml.
+- Is the error `failed to satisfy license requirements` for a dependency? If so, first determine what license the project has and whether this system is sufficient to comply with this license's requirements. If you're unsure, ask a lawyer. Once you've verified that this system is acceptable add the license's SPDX identifier to the `accepted` array in `script/licenses/zed-licenses.toml`.
+- Is `cargo-about` unable to find the license for a dependency? If so, add a clarification field at the end of `script/licenses/zed-licenses.toml`, as specified in the [cargo-about book](https://embarkstudios.github.io/cargo-about/cli/generate/config.html#crate-configuration).
 
-![query](https://doc.database-client.com/images/view.png)
+## Sponsorship
 
-## Execute SQL Query
+Zed is developed by **Zed Industries, Inc.**, a for-profit company.
 
-In the Database Explorer panel, click the `Open Query` button.
-
-![newquery](https://doc.database-client.com/images/newquery.jpg)
-
-That will open a SQL editor bind of database, it provider:
-
-1. IntelliSense SQL edit.
-2. snippets:`sel、del、ins、upd、joi`...
-3. Run selected or current cursor SQL (Shortcut : Ctrl+Enter).
-4. Run all SQL (Shortcut : Ctrl+Shift+Enter, Command ID: `mysql.runSQL`).
-
-![run](https://doc.database-client.com/images/run.jpg)
-
-The database can be searched by clicking the search button to the right of "Tables".
-
-![1708594027208](image/README/1708594027208.png)
-
-## Cache
-
-In order to improve performance, the database information is cached. If your database structure changes externally, you need to click the refresh button to refresh the cache。
-
-![](https://doc.database-client.com/image/connection/1638342622208.png)
-
-## Backup/Import
-
-Move to ant DatabaseNode or TableNode. The export/import options are listed in the context menu (right click to open).
-
-The extension implements the backup function, but it is not stable enough. You can add mysql_dump or pg_dump to the environment variable, and the extension will use these tools for backup.
-
-![bakcup](https://doc.database-client.com/images/Backup.jpg)
-
-## Setting
-
-The extension provides some settings, you can refer to the following operations to go to the console settings.
-
-![1708593458624](image/README_CN/1708593458624.png)
-
-## Generate Mock Data
-
-You can easily generate test data.
-
-![mockData](https://doc.database-client.com/image/minor/mockData.jpg)
-
-## History
-
-Click the history button to open the list of recently executed query history records.
-
-![history](images/history.jpg)
-
-## Credits
-
-- [ssh2](https://github.com/mscdex/ssh2): SSH client.
-- [sql-formatter](https://github.com/zeroturnaround/sql-formatter) SQL format lib.
-- Client Lib:
-  - [node-mysql2](https://github.com/sidorares/node-mysql2) : MySQL client.
-  - [node-postgres](https://github.com/brianc/node-postgres): PostgreSQL client.
-  - [tedious](https://github.com/tediousjs/tedious): SqlServer client.
-  - [ioredis](https://github.com/luin/ioredis): Redis client.
-  - [vscode-sqlite](https://github.com/AlexCovizzi/vscode-sqlite): SQLite client code reference.
+If you’d like to financially support the project, you can do so via GitHub Sponsors.
+Sponsorships go directly to Zed Industries and are used as general company revenue.
+There are no perks or entitlements associated with sponsorship.
